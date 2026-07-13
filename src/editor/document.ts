@@ -1,0 +1,6 @@
+﻿export interface ContentBlock { id: string; type: "text" | "heading" | "image" | "code" | "quote" | "list"; content: string; metadata?: Record<string, any>; }
+export interface Document { id: string; title: string; blocks: ContentBlock[]; createdAt: string; updatedAt: string; tags: string[]; version: number; }
+export function createDocument(title: string): Document { return { id: "doc-" + Date.now(), title, blocks: [], createdAt: new Date().toISOString(), updatedAt: new Date().toISOString(), tags: [], version: 1 }; }
+export function addBlock(doc: Document, block: ContentBlock, index?: number): Document { const blocks = [...doc.blocks]; if (index !== undefined) { blocks.splice(index, 0, block); } else { blocks.push(block); } return { ...doc, blocks, updatedAt: new Date().toISOString(), version: doc.version + 1 }; }
+export function removeBlock(doc: Document, blockId: string): Document { return { ...doc, blocks: doc.blocks.filter(b => b.id !== blockId), updatedAt: new Date().toISOString(), version: doc.version + 1 }; }
+export function updateBlock(doc: Document, blockId: string, updates: Partial<ContentBlock>): Document { return { ...doc, blocks: doc.blocks.map(b => b.id === blockId ? { ...b, ...updates } : b), updatedAt: new Date().toISOString(), version: doc.version + 1 }; }
